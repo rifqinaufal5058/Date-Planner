@@ -184,7 +184,7 @@ export function PlanForm({
   }
 
   return (
-    <form onSubmit={submit} className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10" noValidate>
+    <form onSubmit={submit} className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10" noValidate>
       {/* Details */}
       <section className="space-y-5">
         <h2 className="text-lg font-semibold tracking-tight">Detail</h2>
@@ -235,7 +235,7 @@ export function PlanForm({
         </div>
         <ol className="space-y-3">
           {acts.map((a, i) => (
-            <li key={a.id} className="space-y-3">
+            <li key={a.id} className="min-w-0 space-y-3">
               {i > 0 && (
                 <div className="flex items-center gap-2 pl-4 text-sm text-muted-foreground">
                   <CarProfile className="size-4 shrink-0" />
@@ -257,7 +257,7 @@ export function PlanForm({
                   <span>menit</span>
                 </div>
               )}
-              <div className="rounded-2xl border bg-card p-4">
+              <div className="min-w-0 rounded-2xl border bg-card p-4">
                 <div className="mb-3 flex items-center justify-between gap-2">
                   <span className="grid size-7 place-items-center rounded-full bg-rose-soft font-mono text-xs font-semibold text-rose">
                     {i + 1}
@@ -281,7 +281,7 @@ export function PlanForm({
                     </Button>
                   </div>
                 </div>
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 [&>*]:min-w-0">
                   <div className="grid gap-1.5 sm:col-span-2">
                     <Label htmlFor={`name-${a.id}`} className="text-xs text-muted-foreground">Nama aktivitas</Label>
                     <Input
@@ -328,7 +328,7 @@ export function PlanForm({
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="grid gap-2 sm:col-span-2">
+                  <div className="grid grid-cols-1 gap-2 sm:col-span-2">
                     <div className="flex items-center justify-between gap-2">
                       <Label className="text-xs text-muted-foreground">Tempat</Label>
                       <div role="radiogroup" aria-label="Jenis tempat" className="inline-flex rounded-full bg-secondary p-0.5 text-xs font-medium">

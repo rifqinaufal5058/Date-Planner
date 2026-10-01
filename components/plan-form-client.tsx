@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 export const PlanFormClient = dynamic(() => import("./plan-form").then((m) => m.PlanForm), {
   ssr: false,
   loading: () => (
-    <div className="grid gap-8 lg:grid-cols-[5fr_7fr]">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="space-y-4">
         {[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-11 rounded-xl" />)}
       </div>

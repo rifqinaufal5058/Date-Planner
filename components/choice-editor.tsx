@@ -38,7 +38,7 @@ export function ChoiceEditor({
         {options.map((o, i) => (
           <li
             key={o.id}
-            className={cn("space-y-2.5 rounded-xl border bg-background/60 p-3", o.id === chosenId && "border-rose/50")}
+            className={cn("min-w-0 space-y-2.5 rounded-xl border bg-background/60 p-3", o.id === chosenId && "border-rose/50")}
           >
             <div className="flex items-center gap-2">
               <span className="grid size-7 shrink-0 place-items-center rounded-full bg-rose-soft font-mono text-xs font-semibold text-rose">
@@ -67,7 +67,7 @@ export function ChoiceEditor({
               </Button>
             </div>
             {errors[`opt-${o.id}`] && <p className="pl-9 text-sm text-destructive">{errors[`opt-${o.id}`]}</p>}
-            <div className="space-y-2 pl-9">
+            <div className="min-w-0 space-y-2 pl-9">
               <LocationPicker
                 value={o}
                 onChange={(g) =>

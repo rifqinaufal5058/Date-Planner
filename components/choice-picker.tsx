@@ -62,7 +62,7 @@ export function ChoicePicker({
           "Menunggu pilihan, atau pilih sendiri"
         )}
       </p>
-      <ul className="grid gap-2 sm:grid-cols-2" role="radiogroup" aria-label={`Pilihan untuk ${activity.name}`}>
+      <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 [&>*]:min-w-0" role="radiogroup" aria-label={`Pilihan untuk ${activity.name}`}>
         {options.map((o, i) => {
           const selected = o.id === shownId
           const dimmed = !!shownId && !selected

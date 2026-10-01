@@ -99,7 +99,7 @@ export function DetailSkeleton() {
     <div className="space-y-6">
       <Skeleton className="h-4 w-32" />
       <Skeleton className="h-10 w-2/3" />
-      <div className="grid gap-6 lg:grid-cols-[7fr_5fr]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
         <div className="space-y-3">
           {[0, 1, 2].map((i) => <Skeleton key={i} className="h-28 rounded-2xl" />)}
         </div>

@@ -104,6 +104,40 @@
   }
   html {
     @apply font-sans;
+    /* iOS must not inflate text on its own (also stops odd shrinking after rotation). */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  /* Keep every page within the screen: one stray wide child must never widen the
+     layout viewport (that is what made the edit page render zoomed-out on mobile). */
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+
+/*
+ * A plain `grid` (no grid-cols-*) gets an implicit `auto` column that grows to the
+ * widest unbreakable content (a long place name) and pushes the page wider than the
+ * phone. Give such grids one shrinkable column instead. Grids that set their own
+ * columns are untouched.
+ */
+@layer base {
+  .grid:not([class*="grid-cols-"]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/*
+ * iOS Safari zooms into any focused field whose font-size is below 16px.
+ * Force 16px for every editable control on touch-sized screens; desktop keeps its sizes.
+ */
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  textarea,
+  select,
+  [contenteditable="true"] {
+    font-size: 16px !important;
   }
 }
 

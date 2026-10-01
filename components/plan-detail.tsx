@@ -97,34 +97,36 @@ export function PlanDetail({
             <ArrowLeft className="size-4" /> Semua rencana
           </Link>
         )}
-        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <div className="space-y-4">
           <div className="min-w-0 space-y-2">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-muted-foreground">
-              <span className="inline-flex items-center gap-1.5">
-                <CalendarBlank className="size-4" />
-                {formatDate(plan.plan_date, { weekday: "long", month: "long" })}
-              </span>
-              {plan.location_name && (
-                <span className="inline-flex min-w-0 items-center gap-1.5">
-                  <MapPin className="size-4 shrink-0" />
-                  <span className="truncate">{plan.location_name}</span>
-                </span>
-              )}
-              <StatusPill plan={plan} />
-            </div>
             <h1 className="text-3xl font-semibold tracking-tight text-balance md:text-4xl">{plan.title}</h1>
             {plan.description && (
               <p className="max-w-[60ch] leading-relaxed text-muted-foreground">{plan.description}</p>
             )}
           </div>
-          <PlanActions
-            plan={plan}
-            mode={mode}
-            onEdit={onEdit}
-            onShare={() => shareRef.current?.()}
-            onDelete={() => setConfirmDelete(true)}
-          />
-          {mode === "owner" && <ShareDialog plan={plan} triggerRef={shareRef} />}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <CalendarBlank className="size-4" />
+              {formatDate(plan.plan_date, { weekday: "long", month: "long" })}
+            </span>
+            <StatusPill plan={plan} />
+          </div>
+          {plan.location_name && (
+            <p className="flex min-w-0 items-center gap-1.5 text-sm text-muted-foreground">
+              <MapPin className="size-4 shrink-0" />
+              <span className="truncate">{plan.location_name}</span>
+            </p>
+          )}
+          <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+            <PlanActions
+              plan={plan}
+              mode={mode}
+              onEdit={onEdit}
+              onShare={() => shareRef.current?.()}
+              onDelete={() => setConfirmDelete(true)}
+            />
+            {mode === "owner" && <ShareDialog plan={plan} triggerRef={shareRef} />}
+          </div>
         </div>
       </div>
 
@@ -176,7 +178,7 @@ export function PlanDetail({
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-10">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-10">
         {/* Timeline column */}
         <section className="space-y-4">
           <div className="flex items-center justify-between gap-3">

@@ -84,7 +84,7 @@ export default function MapPage() {
   return (
     // Full-bleed map: cancel the main padding on mobile, fill viewport minus header + bottom nav.
     <div className="-mx-4 -mt-5 -mb-[calc(7.5rem+env(safe-area-inset-bottom))] md:mx-0 md:mt-0 md:mb-0">
-      <div className="relative grid h-[calc(100dvh-3.5rem)] md:h-[calc(100dvh-4rem-5rem)] md:grid-cols-[20rem_1fr] md:gap-4 lg:grid-cols-[22rem_1fr]">
+      <div className="relative grid grid-cols-1 h-[calc(100dvh-3.5rem)] md:h-[calc(100dvh-4rem-5rem)] md:grid-cols-[20rem_minmax(0,1fr)] md:gap-4 lg:grid-cols-[22rem_minmax(0,1fr)]">
         {/* Desktop sidebar */}
         <aside className="hidden min-h-0 flex-col gap-4 md:flex">
           <div>
