@@ -222,7 +222,7 @@ export function PlanForm({
         </div>
         <div className="grid gap-2">
           <Label>Daerah</Label>
-          <LocationPicker value={loc} onChange={setLoc} placeholder="mis. Kota Semarang" />
+          <LocationPicker value={loc} onChange={setLoc} placeholder="mis. Kota Semarang" suggestVisited={false} />
           <p className="text-xs text-muted-foreground">Cukup kota atau area. Tempat tujuan diisi di tiap aktivitas.</p>
         </div>
       </section>

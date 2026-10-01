@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { CircleNotch, Crosshair, GoogleLogo, MagnifyingGlass, MapPin, X } from "@phosphor-icons/react"
+import { useMemo, useState } from "react"
+import { ClockCounterClockwise, CircleNotch, Crosshair, GoogleLogo, MagnifyingGlass, MapPin, Star, X } from "@phosphor-icons/react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -9,6 +9,17 @@ import { Input } from "@/components/ui/input"
 import { LeafletMap } from "@/components/map"
 import type { GeoPoint } from "@/lib/types"
 import { extractMapsLink, sharedPlaceName } from "@/lib/gmaps"
+import { usePlans } from "@/lib/queries"
+import { collectPlaces, type Place } from "@/lib/places"
+import { formatDate } from "@/lib/format"
+
+/** How many past places to show before the user types anything. */
+const RECENT_LIMIT = 3
+const MATCH_LIMIT = 6
+
+function normalize(s: string) {
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim()
+}
 
 type Result = { display_name: string; lat: string; lon: string }
 
@@ -43,10 +54,13 @@ export function LocationPicker({
   value,
   onChange,
   placeholder = "Pilih lokasi",
+  suggestVisited = true,
 }: {
   value: GeoPoint
   onChange: (v: GeoPoint) => void
   placeholder?: string
+  /** Offer places from completed dates. Off for the "Daerah" (area) field. */
+  suggestVisited?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const [draft, setDraft] = useState<GeoPoint>(value)
@@ -55,6 +69,31 @@ export function LocationPicker({
   const [busy, setBusy] = useState<"search" | "gps" | "link" | null>(null)
 
   const hasCoords = value.latitude != null && value.longitude != null
+
+  // Places already visited on completed dates, newest first.
+  const { data: plans } = usePlans()
+  const visited = useMemo(
+    () => (suggestVisited && plans ? collectPlaces(plans).filter((p) => p.visited) : []),
+    [plans, suggestVisited]
+  )
+  const typed = q.trim()
+  const isLink = !!extractMapsLink(typed)
+  const visitedMatches = useMemo(() => {
+    if (isLink) return []
+    if (!typed) return visited.slice(0, RECENT_LIMIT)
+    const needle = normalize(typed)
+    return visited
+      .filter((p) =>
+        [p.name, ...p.visits.map((v) => `${v.activity ?? ""} ${v.planTitle}`)].some((t) => normalize(t).includes(needle))
+      )
+      .slice(0, MATCH_LIMIT)
+  }, [visited, typed, isLink])
+
+  const pickVisited = (p: Place) => {
+    setDraft({ location_name: p.name, latitude: p.lat, longitude: p.lng })
+    setResults([])
+    setQ("")
+  }
 
   const openDialog = () => {
     setDraft(value)
@@ -67,6 +106,9 @@ export function LocationPicker({
     const text = q.trim()
     if (!text) return
     if (extractMapsLink(text)) return importLink(text)
+    if (visitedMatches.length === 1 && normalize(visitedMatches[0].name) === normalize(text)) {
+      return pickVisited(visitedMatches[0])
+    }
     setBusy("search")
     try {
       const r = await search(q)
@@ -187,7 +229,10 @@ export function LocationPicker({
           <div className="flex gap-2" role="search">
             <Input
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={(e) => {
+                setQ(e.target.value)
+                setResults([]) // stale map results would mix with the live history filter
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault()
@@ -220,6 +265,56 @@ export function LocationPicker({
             <GoogleLogo weight="bold" className="size-4" />
             Tempel link dari Google Maps
           </button>
+          {visitedMatches.length > 0 && (
+            <section aria-label="Tempat yang pernah dikunjungi" className="space-y-1.5">
+              <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                <ClockCounterClockwise className="size-3.5" />
+                {typed ? "Pernah dikunjungi" : "Terakhir dikunjungi"}
+              </p>
+              <ul className="divide-y overflow-hidden rounded-xl border">
+                {visitedMatches.map((p) => {
+                  const selected = draft.latitude === p.lat && draft.longitude === p.lng
+                  return (
+                    <li key={p.key}>
+                      <button
+                        type="button"
+                        onClick={() => pickVisited(p)}
+                        aria-pressed={selected}
+                        className={`flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors hover:bg-muted ${selected ? "bg-rose-soft" : ""}`}
+                      >
+                        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-rose-soft text-rose">
+                          <MapPin weight="fill" className="size-4" />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate font-medium">{p.name}</span>
+                          <span className="block truncate text-xs text-muted-foreground">
+                            {p.visits.length > 1 ? `${p.visits.length}x · ` : ""}
+                            {formatDate(p.lastDate, { weekday: undefined })}
+                            {p.visits[0]?.planTitle ? ` · ${p.visits[0].planTitle}` : ""}
+                          </span>
+                        </span>
+                        {p.avgRating ? (
+                          <span className="inline-flex shrink-0 items-center gap-0.5 text-xs font-medium">
+                            <Star weight="fill" className="size-3.5 text-rose" /> {p.avgRating.toFixed(1)}
+                          </span>
+                        ) : null}
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
+          )}
+          {typed && !isLink && visitedMatches.length === 0 && results.length === 0 && busy !== "search" && visited.length > 0 && (
+            <p className="text-xs text-muted-foreground">
+              Belum pernah ke tempat ini. Tekan Enter untuk mencari di peta.
+            </p>
+          )}
+          {results.length > 0 && (
+            <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+              <MagnifyingGlass className="size-3.5" /> Hasil pencarian
+            </p>
+          )}
           {results.length > 0 && (
             <ul className="max-h-40 divide-y overflow-y-auto rounded-xl border">
               {results.map((r) => (
