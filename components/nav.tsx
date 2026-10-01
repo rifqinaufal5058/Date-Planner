@@ -59,9 +59,15 @@ export function ThemeToggle({ className }: { className?: string }) {
 function Brand() {
   return (
     <Link href="/" className="flex items-center gap-2.5 font-semibold tracking-tight">
-      <span className="grid size-8 place-items-center rounded-full bg-rose text-rose-foreground">
-        <CalendarHeart weight="fill" className="size-4.5" />
-      </span>
+      {/* 64px asset for a 32px slot = sharp on retina; tiny WebP, so a plain <img> is fine */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/brand/logo-64.webp"
+        alt=""
+        width={32}
+        height={32}
+        className="size-8 rounded-full ring-2 ring-rose/30"
+      />
       <span className="text-[1.05rem]">Date Planner</span>
     </Link>
   )
