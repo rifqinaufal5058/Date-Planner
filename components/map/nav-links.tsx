@@ -1,5 +1,5 @@
 import { AppleLogo, GoogleLogo } from "@phosphor-icons/react/dist/ssr"
-import { appleMapsUrl, googleMapsUrl } from "@/lib/format"
+import { appleMapsPlaceUrl, googleMapsPlaceUrl } from "@/lib/format"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -19,11 +19,11 @@ export function NavLinks({
   const cls = cn(buttonVariants({ variant: "outline", size }), "gap-1.5")
   return (
     <div className={cn("flex flex-wrap gap-2", className)}>
-      <a href={googleMapsUrl(lat, lng)} target="_blank" rel="noreferrer" className={cls}>
+      <a href={googleMapsPlaceUrl(lat, lng)} target="_blank" rel="noreferrer" className={cls}>
         <GoogleLogo weight="bold" />
         Google Maps
       </a>
-      <a href={appleMapsUrl(lat, lng, name)} target="_blank" rel="noreferrer" className={cls}>
+      <a href={appleMapsPlaceUrl(lat, lng, name)} target="_blank" rel="noreferrer" className={cls}>
         <AppleLogo weight="fill" />
         Apple Maps
       </a>

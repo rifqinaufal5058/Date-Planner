@@ -3,7 +3,7 @@
 import { ArrowCounterClockwise, CheckCircle, Heart, MapPin, NavigationArrow } from "@phosphor-icons/react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
-import { googleMapsUrl } from "@/lib/format"
+import { googleMapsPlaceUrl } from "@/lib/format"
 import { useChooseOption } from "@/lib/queries"
 import type { Activity, ChoiceBy } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -119,7 +119,7 @@ export function ChoicePicker({
                     )}
                     {hasCoords && (
                       <a
-                        href={googleMapsUrl(o.latitude!, o.longitude!)}
+                        href={googleMapsPlaceUrl(o.latitude!, o.longitude!)}
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`Lihat ${o.label} di Google Maps`}

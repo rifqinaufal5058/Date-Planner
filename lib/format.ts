@@ -76,6 +76,17 @@ export function appleMapsUrl(lat: number, lng: number, name?: string | null) {
   return `https://maps.apple.com/?daddr=${lat},${lng}${q}`
 }
 
+/** Open the pin/place card in Google Maps, without starting navigation. */
+export function googleMapsPlaceUrl(lat: number, lng: number) {
+  return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`
+}
+
+/** Show a location pin in Apple Maps, without requesting directions. */
+export function appleMapsPlaceUrl(lat: number, lng: number, name?: string | null) {
+  const q = name ? `&q=${encodeURIComponent(name)}` : ""
+  return `https://maps.apple.com/?ll=${lat},${lng}${q}`
+}
+
 export function progressOf(plan: FullPlan) {
   const total = plan.activities.length
   const done = plan.activities.filter((a) => a.status !== "scheduled").length
