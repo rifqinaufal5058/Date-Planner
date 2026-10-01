@@ -1,26 +1,170 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-outfit);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-outfit);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-rose: var(--rose);
+  --color-rose-soft: var(--rose-soft);
+  --color-rose-foreground: var(--rose-foreground);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Palette: cool stone neutrals + a single deep-rose accent. */
+:root {
+  --background: oklch(0.985 0.002 20);
+  --foreground: oklch(0.2 0.01 20);
+  --card: oklch(1 0 0 / 0.9);
+  --card-foreground: oklch(0.2 0.01 20);
+  --popover: oklch(0.995 0.002 20);
+  --popover-foreground: oklch(0.2 0.01 20);
+  --primary: oklch(0.22 0.012 20);
+  --primary-foreground: oklch(0.98 0.004 20);
+  --secondary: oklch(0.955 0.005 20);
+  --secondary-foreground: oklch(0.25 0.012 20);
+  --muted: oklch(0.955 0.005 20);
+  --muted-foreground: oklch(0.5 0.012 20);
+  --accent: oklch(0.955 0.005 20);
+  --accent-foreground: oklch(0.25 0.012 20);
+  --destructive: oklch(0.56 0.2 27);
+  --border: oklch(0.91 0.006 20);
+  --input: oklch(0.89 0.008 20);
+  --ring: oklch(0.58 0.17 8);
+  --rose: oklch(0.58 0.17 8);
+  --rose-soft: oklch(0.95 0.025 8);
+  --rose-foreground: oklch(0.985 0.005 8);
+  --success: oklch(0.55 0.12 160);
+  --success-soft: oklch(0.95 0.03 160);
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: oklch(0.165 0.006 20);
+  --foreground: oklch(0.95 0.005 20);
+  --card: oklch(0.205 0.008 20);
+  --card-foreground: oklch(0.95 0.005 20);
+  --popover: oklch(0.22 0.008 20);
+  --popover-foreground: oklch(0.95 0.005 20);
+  --primary: oklch(0.94 0.006 20);
+  --primary-foreground: oklch(0.2 0.01 20);
+  --secondary: oklch(0.26 0.009 20);
+  --secondary-foreground: oklch(0.95 0.005 20);
+  --muted: oklch(0.26 0.009 20);
+  --muted-foreground: oklch(0.7 0.012 20);
+  --accent: oklch(0.26 0.009 20);
+  --accent-foreground: oklch(0.95 0.005 20);
+  --destructive: oklch(0.68 0.18 22);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.7 0.15 8);
+  --rose: oklch(0.7 0.15 8);
+  --rose-soft: oklch(0.3 0.06 8);
+  --rose-foreground: oklch(0.18 0.02 8);
+  --success: oklch(0.72 0.13 160);
+  --success-soft: oklch(0.3 0.05 160);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html {
+    @apply font-sans;
   }
 }
 
-body {
-  background: var(--background);
+/* Leaflet tweaks so the map blends with both themes */
+.leaflet-container {
+  font-family: inherit;
+  background: var(--muted);
+  z-index: 0;
+}
+.dark .leaflet-tile-pane {
+  filter: brightness(0.75) invert(1) contrast(0.9) hue-rotate(200deg) saturate(0.4) brightness(0.9);
+}
+.dark .leaflet-control-attribution {
+  background: oklch(0.2 0.01 20 / 0.8) !important;
+  color: var(--muted-foreground);
+}
+.dark .leaflet-control-attribution a {
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    animation: reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/*
+ * Floating tab bar glass. Approximation of Apple's "Liquid Glass" with
+ * backdrop-filter + layered border/highlight (there is no official web version).
+ */
+.glass-bar {
+  background: color-mix(in oklch, var(--background) 72%, transparent);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  box-shadow:
+    0 12px 32px -12px oklch(0.25 0.02 20 / 0.28),
+    inset 0 1px 0 oklch(1 0 0 / 0.55);
+}
+.dark .glass-bar {
+  background: color-mix(in oklch, var(--card) 70%, transparent);
+  border-color: oklch(1 0 0 / 0.1);
+  box-shadow:
+    0 12px 32px -12px oklch(0 0 0 / 0.6),
+    inset 0 1px 0 oklch(1 0 0 / 0.08);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass-bar {
+    background: var(--card);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
